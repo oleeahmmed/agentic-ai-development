@@ -18,7 +18,7 @@
 | ফোল্ডার | প্রজেক্ট | ফেজ | অবস্থা |
 |---|---|---|---|
 | [00-setup](00-setup/README.md) | পরিবেশ, প্রথম LLM কল | Phase 0 | সম্পন্ন — লাইভ কল সফল |
-| [python-basics](python-basics/README.md) | Python বেসিক | Phase 1 | গাইড ও ৮টি পাঠ তৈরি |
+| [python-basics](python-basics/README.md) | Python বেসিক | Phase 1 | সম্পন্ন — গাইড ও ৮টি পাঠ |
 | [01-hello-agent](01-hello-agent/README.md) | Hello Agent | Phase 2 | সম্পন্ন — পার্সোনা, মেমোরি, `/reset` টেস্টেড |
 | [02-weather-agent](02-weather-agent/README.md) | Weather Agent | Phase 3 | সম্পন্ন — ৩টি টুল, নিজের লেখা লুপ টেস্টেড |
 | [03-memory-friend](03-memory-friend/README.md) | Memory Friend | Phase 4 | সম্পন্ন — স্মৃতি, `/memory`, `/forget` টেস্টেড |
@@ -27,6 +27,7 @@
 | [06-company-helper](06-company-helper/README.md) | Company Helper | Phase 8 | অপেক্ষায় |
 | [shared](shared/README.md) | কমন কোড (LLM client, skill loader) | সব ফেজ | অপেক্ষায় |
 | [notes](notes/README.md) | দৈনিক শেখা ও ভুলের নোট | সব ফেজ | চলছে |
+| [ai-mini-office](ai-mini-office/README.md) | আগের প্রোটোটাইপ (Phase 6-এ নতুন করে বানানো হবে) | ফেজের আগে | রাখা হয়েছে |
 
 ---
 

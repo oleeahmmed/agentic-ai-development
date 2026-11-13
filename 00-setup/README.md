@@ -72,6 +72,14 @@ pip install -r 00-setup/requirements.txt
 | `python-dotenv` | `.env` ফাইল পড়া |
 | `httpx` | ইন্টারনেটে অনুরোধ পাঠানো (পরে লাগবে) |
 
+ফাইলটা নতুন করে বানাতে হলে `00-setup/requirements.txt`-এ ঠিক এই তিনটি লাইন রাখুন:
+
+```text
+openai>=1.0
+python-dotenv>=1.0
+httpx>=0.27
+```
+
 ---
 
 ## ধাপ ৫ — API key নিন
@@ -102,6 +110,8 @@ LLM_API_KEY=sk-or-v1-আপনার-আসল-কি
 LLM_BASE_URL=https://openrouter.ai/api/v1
 LLM_MODEL=openai/gpt-4.1-mini
 ```
+
+> `.env.example`-এ ৫টি provider-এর নমুনা আছে (OpenAI, OpenRouter, Gemini, Ollama, OpenRouter ফ্রি)। প্রথমটি খোলা, বাকিগুলো `#` দিয়ে বন্ধ। আপনি যেটা ব্যবহার করবেন, শুধু সেটার লাইনগুলো `#` ছাড়া করুন — উপরের তিনটি লাইন OpenRouter-এর নমুনা।
 
 | লাইন | কাজ |
 |---|---|

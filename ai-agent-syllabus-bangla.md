@@ -493,28 +493,35 @@ START → intake/guard → classify ─┬→ order_status ─┐
 
 ```
 ai-agent/
-├─ 00-setup/                 # প্রথম API কল, .env.example
+├─ 00-setup/                 # প্রথম API কল, check_env.py, .env.example
+├─ python-basics/            # Phase 1 — ৮টি পাঠ
 ├─ 01-hello-agent/
-│  ├─ agent.py               # CLI + messages
+│  ├─ 01_single_call.py
+│  ├─ 02_chat_loop.py
 │  ├─ prompts/system.md
 │  └─ README.md
 ├─ 02-weather-agent/
-│  ├─ agent_loop.py          # নিজের লেখা লুপ
+│  ├─ 01_test_tools.py
+│  ├─ 02_agent_loop.py       # নিজের লেখা লুপ
 │  ├─ tools.py
+│  ├─ prompts/system.md
 │  └─ README.md
 ├─ 03-memory-friend/
-│  ├─ agent.py
+│  ├─ 01_memory_test.py
+│  ├─ 02_memory_agent.py
 │  ├─ memory.py
-│  └─ data/
-├─ 04-research-buddy/
+│  ├─ prompts/system.md
+│  ├─ memories.json          # প্রথম save-এ তৈরি হয়, git-এ যায় না
+│  └─ README.md
+├─ 04-research-buddy/        # Phase 5 — পরিকল্পিত
 │  ├─ graph.py
 │  ├─ nodes.py
 │  ├─ tools.py
 │  └─ reports/
-├─ 05-skill-creator/
+├─ 05-skill-creator/         # Phase 7 — পরিকল্পিত
 │  ├─ skills/                # তৈরি হওয়া স্কিল
 │  └─ notes/
-├─ 06-company-helper/
+├─ 06-company-helper/        # Phase 8 — পরিকল্পিত
 │  ├─ app.py                 # FastAPI / Streamlit
 │  ├─ graph.py
 │  ├─ tools/
@@ -522,6 +529,7 @@ ai-agent/
 │  ├─ db/seed.py
 │  ├─ evals/cases.json
 │  └─ logs/
+├─ ai-mini-office/           # আগের প্রোটোটাইপ
 ├─ shared/                   # skill_loader, llm client, logging
 └─ notes/                    # প্রতিদিনের শেখা, ভুল, সমাধান
 ```

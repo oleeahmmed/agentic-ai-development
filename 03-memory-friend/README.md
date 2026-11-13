@@ -31,7 +31,7 @@ Phase 2-এ মিতু কথোপকথন মনে রাখত — কি
 | ধরন | কোথায় থাকে | কতদিন থাকে |
 |---|---|---|
 | **Short-term** | `messages` লিস্ট | প্রোগ্রাম বন্ধ হলে মুছে যায় |
-| **Long-term** | `memories.json` ফাইল | যতদিন ফাইলটা রাখেন |
+| **Long-term** | `03-memory-friend/memories.json` ফাইল | যতদিন ফাইলটা রাখেন |
 
 এই দুইটা একসাথে চলে:
 
@@ -50,7 +50,7 @@ Phase 2-এ মিতু কথোপকথন মনে রাখত — কি
 | `01_memory_test.py` | LLM ছাড়া স্মৃতি পরীক্ষা |
 | `02_memory_agent.py` | চ্যাট + স্মৃতি |
 | `prompts/system.md` | মিতুর স্মৃতি-নিয়ম |
-| `memories.json` | আসল স্মৃতি (নিজে তৈরি হবে, git-এ যাবে না) |
+| `memories.json` | আসল স্মৃতি — **প্রথম save-এ নিজে তৈরি হবে**, git-এ যাবে না |
 
 ---
 
@@ -123,11 +123,40 @@ def forget_all(user_id):
 
 বাইরের চাবি = `user_id`। ভিতরের চাবি = তথ্যের নাম। তাই দুইজনের স্মৃতি মিশে যায় না।
 
+### `memories.json` কোথায়?
+
+ফাইলটা `memory.py`-এর পাশেই তৈরি হয়:
+
+```
+03-memory-friend/memories.json
+```
+
+আপনার কম্পিউটারে পুরো ঠিকানা:
+
+```
+C:\Users\olee\Desktop\ai-agent\03-memory-friend\memories.json
+```
+
+তিনটি জিনিস খেয়াল রাখুন:
+
+- **শুরুতে ফাইলটা থাকেই না।** প্রথমবার `save_memory` চললে (এজেন্টে কিছু বললে বা `01_memory_test.py` চালালে) ফাইলটা নিজে তৈরি হয়।
+- এজেন্ট চালিয়ে শুধু `User id` লিখলে এখনো ফাইল তৈরি হয়নি — তখন খুঁজে পাবেন না।
+- `01_memory_test.py` একবার চালালেই ফাইলটা দেখা যাবে — এতে LLM লাগে না।
+
+দেখার উপায়:
+
+```bash
+ls 03-memory-friend/
+cat 03-memory-friend/memories.json
+```
+
+VS Code-এ খুলতে: `code 03-memory-friend/memories.json`
+
 ### কোন অংশ কী কাজ করে
 
 | অংশ | কাজ |
 |---|---|
-| `FILE` | `memories.json`-এর ঠিকানা |
+| `FILE` | `03-memory-friend/memories.json`-এর ঠিকানা |
 | `load_all()` | পুরো ফাইল পড়া; ফাইল না থাকলে `{}` |
 | `save_all(data)` | পুরো ফাইল লেখা |
 | `ensure_ascii=False` | বাংলা অক্ষর ঠিক রাখা |
@@ -519,6 +548,7 @@ User id (Enter = rafi): rafi
 | সেভ হচ্ছে না (`[স্মৃতি]` আসে না) | মডেল টুল না ডাকলে `prompts/system.md`-এর নিয়ম দেখুন |
 | বাংলা এলোমেলো | Git Bash / Windows Terminal ব্যবহার করুন |
 | `JSONDecodeError` | `memories.json` হাতে ভাঙা হয়েছে — ফাইলটা মুছে আবার চালান |
+| `memories.json` খুঁজে পাচ্ছি না | প্রথম save-এর আগে ফাইল থাকে না — `python 03-memory-friend/01_memory_test.py` চালিয়ে `03-memory-friend/` দেখুন |
 | দুইজনের তথ্য মিশে যাচ্ছে | শুরুতে সঠিক `user id` দিয়েছেন কি না দেখুন |
 | `401` / `429` | Phase 0-এর `.env` ও মডেল দেখুন |
 
@@ -527,7 +557,7 @@ User id (Enter = rafi): rafi
 ## শেষ চেকলিস্ট
 
 - [ ] `01_memory_test.py` চালিয়ে ৫টি ধাপ দেখেছেন
-- [ ] `memories.json` নিজে খুলে দেখেছেন
+- [ ] `03-memory-friend/memories.json` নিজে খুলে দেখেছেন (প্রথম save-এর পরে তৈরি হয়)
 - [ ] সেভ করার পর প্রোগ্রাম বন্ধ করে আবার চালিয়ে দেখেছেন
 - [ ] `karim` দিয়ে আলাদা খাতা পরীক্ষা করেছেন
 - [ ] পুরনো পছন্দ override হয়েছে
