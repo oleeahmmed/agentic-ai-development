@@ -17,8 +17,9 @@
 
 | ফোল্ডার | প্রজেক্ট | ফেজ | অবস্থা |
 |---|---|---|---|
-| [00-setup](00-setup/README.md) | পরিবেশ, প্রথম LLM কল | Phase 0 | গাইড ও কোড তৈরি — আপনার API key বসানো বাকি |
-| [01-hello-agent](01-hello-agent/README.md) | Hello Agent | Phase 2 | অপেক্ষায় |
+| [00-setup](00-setup/README.md) | পরিবেশ, প্রথম LLM কল | Phase 0 | সম্পন্ন — লাইভ কল সফল |
+| [python-basics](python-basics/README.md) | Python বেসিক | Phase 1 | গাইড ও ৮টি পাঠ তৈরি |
+| [01-hello-agent](01-hello-agent/README.md) | Hello Agent | Phase 2 | সম্পন্ন — পার্সোনা, মেমোরি, `/reset`, স্ট্রিমিং টেস্টেড |
 | [02-weather-agent](02-weather-agent/README.md) | Weather Agent | Phase 3 | অপেক্ষায় |
 | [03-memory-friend](03-memory-friend/README.md) | Memory Friend | Phase 4 | অপেক্ষায় |
 | [04-research-buddy](04-research-buddy/README.md) | Research Buddy | Phase 5 | অপেক্ষায় |
@@ -43,9 +44,9 @@ python 00-setup/hello_llm.py
 
 ## অগ্রগতি
 
-- [x] Phase 0 — পরিবেশ ও প্রথম LLM কল (key দেওয়া বাকি)
-- [ ] Phase 1 — Python বেসিক
-- [ ] Phase 2 — Hello Agent
+- [x] Phase 0 — পরিবেশ ও প্রথম LLM কল (লাইভ কল সফল)
+- [x] Phase 1 — Python বেসিক (গাইড ও ৮টি পাঠ)
+- [x] Phase 2 — Hello Agent (লাইভ টেস্ট সফল)
 - [ ] Phase 3 — Weather Agent
 - [ ] Phase 4 — Memory Friend
 - [ ] Phase 5 — Research Buddy

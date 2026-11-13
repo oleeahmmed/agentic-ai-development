@@ -295,6 +295,8 @@ Little Office Ltd. আসলে নেই। মডেল তা জানে �
 |---|---|
 | `ModuleNotFoundError` | `.venv` চালু করুন, তারপর `pip install -r 00-setup/requirements.txt` |
 | `401` | key ভুল — `.env` ঠিক করুন, নতুন key নিন |
+| `402` | ফ্রি অ্যাকাউন্টে টাকার মডেল চলবে না — `:free` মডেল ব্যবহার করুন |
+| `429` | ফ্রি মডেল ব্যস্ত/লিমিটে — কিছুক্ষণ পরে বা অন্য `:free` মডেল চেষ্টা করুন |
 | `404 model not found` | `LLM_MODEL` বা `LLM_BASE_URL` মেলেনি |
 | `.env` পাওয়া যাচ্ছে না | ফাইল `00-setup/.env`-এ আছে কি? নাম `.env.txt` হয়ে গেছে কি? |
 | বাংলা অক্ষর এলোমেলো | Git Bash বা Windows Terminal ব্যবহার করুন |
