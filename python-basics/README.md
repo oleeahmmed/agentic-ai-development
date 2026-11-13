@@ -472,6 +472,6 @@ python python-basics/08_task_manager.py
 ## পরের ধাপ
 
 Phase 2 — **Hello Agent** (ফোল্ডার: [`01-hello-agent`](../01-hello-agent/README.md))।
-এখানে Python আর LLM জোড়া লাগবে: পার্সোনা, কথোপকথন মনে রাখা, token হিসাব।
+এখানে Python আর LLM জোড়া লাগবে: পার্সোনা, কথোপকথন মনে রাখা, `/reset`।
 
 > Phase 0-এর `.env` এখনো বাকি। Phase 2-এ যাওয়ার আগে key বসিয়ে `hello_llm.py` একবার চালিয়ে নিন — [গাইড](../00-setup/README.md)।
