@@ -22,7 +22,7 @@
 | [01-hello-agent](01-hello-agent/README.md) | Hello Agent | Phase 2 | সম্পন্ন — পার্সোনা, মেমোরি, `/reset` টেস্টেড |
 | [02-weather-agent](02-weather-agent/README.md) | Weather Agent | Phase 3 | সম্পন্ন — ৩টি টুল, নিজের লেখা লুপ টেস্টেড |
 | [03-memory-friend](03-memory-friend/README.md) | Memory Friend | Phase 4 | সম্পন্ন — স্মৃতি, `/memory`, `/forget` টেস্টেড |
-| [04-research-buddy](04-research-buddy/README.md) | Research Buddy | Phase 5 | অপেক্ষায় |
+| [04-research-buddy](04-research-buddy/README.md) | Research Buddy | Phase 5 | সম্পন্ন — গ্রাফ, লুপ, অনুমতি যাচাইড (লাইভ LLM টেস্ট বাকি) |
 | [05-skill-creator](05-skill-creator/README.md) | Skill Creator | Phase 7 | অপেক্ষায় |
 | [06-company-helper](06-company-helper/README.md) | Company Helper | Phase 8 | অপেক্ষায় |
 | [shared](shared/README.md) | কমন কোড (LLM client, skill loader) | সব ফেজ | অপেক্ষায় |
@@ -50,7 +50,7 @@ python 00-setup/hello_llm.py
 - [x] Phase 2 — Hello Agent (লাইভ টেস্ট সফল)
 - [x] Phase 3 — Weather Agent (লাইভ টেস্ট সফল)
 - [x] Phase 4 — Memory Friend (লাইভ টেস্ট সফল)
-- [ ] Phase 5 — Research Buddy
+- [x] Phase 5 — Research Buddy (গ্রাফ ও অনুমতি যাচাইড; লাইভ LLM টেস্ট বাকি)
 - [ ] Phase 6 — Skills
 - [ ] Phase 7 — Skill Creator (Hermes)
 - [ ] Phase 8 — Company Helper

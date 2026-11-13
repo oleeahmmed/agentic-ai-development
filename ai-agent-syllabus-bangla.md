@@ -295,7 +295,7 @@ START → plan → search → summarize → critique ─(যথেষ্ট?)→
                      └────── revise ←──────┘
 ```
 
-- প্রশ্ন → উপ-প্রশ্নে ভাগ → সার্চ (Tavily বা DuckDuckGo) → পড়া → সারাংশ → সমালোচনা → দরকার হলে আবার খোঁজা (সর্বোচ্চ ৩ বার) → সোর্সসহ রিপোর্ট → `.md` ফাইলে সেভ
+- প্রশ্ন → উপ-প্রশ্নে ভাগ → সার্চ (Wikipedia API — key লাগে না; চাইলে Tavily/DuckDuckGo) → পড়া → সারাংশ → সমালোচনা → দরকার হলে আবার খোঁজা (সর্বোচ্চ ৩ বার) → সোর্সসহ রিপোর্ট → `.md` ফাইলে সেভ
 - Checkpointer: মাঝপথে থামিয়ে আবার চালানো যায়
 - Streaming: কোন ধাপে আছে দেখা যায়
 - Eval: ১০টি টপিক; প্রতিটি দাবির পাশে সত্যিকারের URL আছে কি না
@@ -478,7 +478,7 @@ START → intake/guard → classify ─┬→ order_status ─┐
 | HTTP | httpx | টুল ও API কল |
 | DB | SQLite | প্রথম থেকেই বাস্তব ডেটা, শেখা সহজ |
 | Vector | Chroma / sqlite-vec | embedding search |
-| Search | Tavily / DuckDuckGo | Research Buddy |
+| Search | Wikipedia API (key ছাড়া) / Tavily / DuckDuckGo | Research Buddy |
 | UI | Streamlit / Gradio | দ্রুত চ্যাট UI |
 | API | FastAPI | প্রোডাকশন endpoint + SSE |
 | Eval/Trace | LangSmith / Langfuse / pytest | মান ও ডিবাগ |
@@ -513,11 +513,13 @@ ai-agent/
 │  ├─ prompts/system.md
 │  ├─ memories.json          # প্রথম save-এ তৈরি হয়, git-এ যায় না
 │  └─ README.md
-├─ 04-research-buddy/        # Phase 5 — পরিকল্পিত
-│  ├─ graph.py
-│  ├─ nodes.py
-│  ├─ tools.py
-│  └─ reports/
+├─ 04-research-buddy/
+│  ├─ 01_test_tools.py
+│  ├─ tools.py               # Wikipedia সার্চ ও পাতা পড়া
+│  ├─ nodes.py               # plan, search, summarize, critique, revise, approve, write
+│  ├─ graph.py               # গ্রাফ, লুপ, interrupt, রিপোর্ট
+│  ├─ prompts/system.md
+│  └─ reports/               # তৈরি হওয়া রিপোর্ট (git-এ যায় না)
 ├─ 05-skill-creator/         # Phase 7 — পরিকল্পিত
 │  ├─ skills/                # তৈরি হওয়া স্কিল
 │  └─ notes/
