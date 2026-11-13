@@ -19,7 +19,7 @@
 |---|---|---|---|
 | [00-setup](00-setup/README.md) | পরিবেশ, প্রথম LLM কল | Phase 0 | সম্পন্ন — লাইভ কল সফল |
 | [python-basics](python-basics/README.md) | Python বেসিক | Phase 1 | গাইড ও ৮টি পাঠ তৈরি |
-| [01-hello-agent](01-hello-agent/README.md) | Hello Agent | Phase 2 | সম্পন্ন — পার্সোনা, মেমোরি, `/reset`, স্ট্রিমিং টেস্টেড |
+| [01-hello-agent](01-hello-agent/README.md) | Hello Agent | Phase 2 | সম্পন্ন — পার্সোনা, মেমোরি, `/reset` টেস্টেড |
 | [02-weather-agent](02-weather-agent/README.md) | Weather Agent | Phase 3 | অপেক্ষায় |
 | [03-memory-friend](03-memory-friend/README.md) | Memory Friend | Phase 4 | অপেক্ষায় |
 | [04-research-buddy](04-research-buddy/README.md) | Research Buddy | Phase 5 | অপেক্ষায় |

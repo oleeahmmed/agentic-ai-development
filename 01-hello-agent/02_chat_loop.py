@@ -22,14 +22,22 @@ system_prompt = (base / "prompts" / "system.md").read_text(encoding="utf-8")
 client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL"))
 
 messages = [{"role": "system", "content": system_prompt}]
+total_tokens = 0
 
-print("মিতুর সাথে কথা বলুন। বন্ধ করতে exit লিখুন।")
+print("মিতুর সাথে কথা বলুন।")
+print("/reset = নতুন কথোপকথন, exit = বন্ধ")
 
 while True:
     question = input("তুমি: ").strip()
 
     if question == "exit":
         break
+
+    if question == "/reset":
+        messages = [{"role": "system", "content": system_prompt}]
+        total_tokens = 0
+        print("নতুন কথোপকথন শুরু হয়েছে।")
+        continue
 
     if not question:
         continue
@@ -41,6 +49,8 @@ while True:
     messages.append({"role": "assistant", "content": answer})
 
     print("মিতু:", answer)
-    print("token:", response.usage.total_tokens)
+
+    total_tokens = total_tokens + response.usage.total_tokens
+    print(f"token: {response.usage.total_tokens} | মোট: {total_tokens}")
 
 print("কথোপকথন বন্ধ হলো।")

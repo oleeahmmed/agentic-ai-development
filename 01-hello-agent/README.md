@@ -2,7 +2,7 @@
 
 > **লক্ষ্য:** LLM-কে "মিতু" নামের একজন অফিস কর্মী বানানো — যে নিজের পরিচয় জানে, কথোপকথন মনে রাখে, আর যা জানে না তা বানিয়ে বলে না।
 > **সময়:** ২–৩ দিন, দিনে ৩০–৬০ মিনিট।
-> **খরচ:** প্রতি উত্তরে ১ টাকারও কম।
+> **খরচ:** ফ্রি মডেলে শূন্য; সস্তা মডেলে প্রতি উত্তরে ১ টাকারও কম।
 
 ---
 
@@ -25,11 +25,9 @@ python 00-setup/check_env.py
 |---|---|
 | `prompts/system.md` | মিতুর পরিচয় ও কোম্পানির হ্যান্ডবুক |
 | `01_single_call.py` | একটি প্রশ্ন, একটি উত্তর |
-| `02_chat_loop.py` | বারবার কথা — কথোপকথন মনে রাখে |
-| `agent.py` | `02` + `/reset` + মোট token |
-| `bonus_streaming.py` | উত্তর লেখার সাথে সাথে দেখা (বোনাস) |
+| `02_chat_loop.py` | বারবার কথা, মেমোরি, `/reset`, token হিসাব |
 
-ক্রম অনুযায়ী চালাবেন। প্রতিটি ফাইল আগেরটার উপর সামান্য যোগ করে।
+মাত্র দুটি পাইথন ফাইল। দ্বিতীয়টা চালালেই পুরো Agent অনুভূতি পাবেন।
 
 ---
 
@@ -183,108 +181,6 @@ system_prompt = (base / "prompts" / "system.md").read_text(encoding="utf-8")
 client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL"))
 
 messages = [{"role": "system", "content": system_prompt}]
-
-print("মিতুর সাথে কথা বলুন। বন্ধ করতে exit লিখুন।")
-
-while True:
-    question = input("তুমি: ").strip()
-
-    if question == "exit":
-        break
-
-    if not question:
-        continue
-
-    messages.append({"role": "user", "content": question})
-
-    response = client.chat.completions.create(model=model, messages=messages)
-    answer = response.choices[0].message.content
-    messages.append({"role": "assistant", "content": answer})
-
-    print("মিতু:", answer)
-    print("token:", response.usage.total_tokens)
-
-print("কথোপকথন বন্ধ হলো।")
-```
-
-**চালান:**
-
-```bash
-python 01-hello-agent/02_chat_loop.py
-```
-
-**এভাবে কথা বলুন:**
-
-```
-মিতুর সাথে কথা বলুন। বন্ধ করতে exit লিখুন।
-তুমি: তুমি কে?
-মিতু: আমি মিতু, Little Office Ltd.-এর কাস্টমার সাপোর্ট অ্যাসিস্ট্যান্ট।
-token: 312
-তুমি: আমার নাম রাফি
-মিতু: আনন্দিত রাফি! কীভাবে সাহায্য করতে পারি?
-token: 401
-তুমি: আমার নাম কী?
-মিতু: আপনার নাম রাফি।
-token: 445
-তুমি: exit
-কথোপকথন বন্ধ হলো।
-```
-
-### কোন অংশ কী কাজ করে
-
-| অংশ | কাজ |
-|---|---|
-| `messages = [system]` | কথোপকথনের খাতা; প্রথম পাতায় নিয়ম |
-| `while True` | `exit` না বলা পর্যন্ত চলে |
-| `input(...)` | আমাদের প্রশ্ন নেয় |
-| `messages.append({"role": "user", ...})` | প্রশ্ন খাতায় লেখে |
-| `create(..., messages=messages)` | **পুরো খাতা** মডেলকে দেখায় |
-| `messages.append({"role": "assistant", ...})` | উত্তরও খাতায় লেখে |
-| `response.usage.total_tokens` | এই এক উত্তরের খরচ |
-
-### সবচেয়ে গুরুত্বপূর্ণ লাইন
-
-```python
-messages.append({"role": "assistant", "content": answer})
-```
-
-এই লাইনটা না থাকলে মডেল পরের বার আগের উত্তর দেখতে পাবে না — মনে হবে সব ভুলে গেছে।
-
-**LLM-এর নিজের স্মৃতি নেই।** যে "মনে রাখা" দেখছেন, সেটা আসলে আমরা প্রতিবার পুরো কথোপকথন আবার পাঠাচ্ছি।
-
-**খেয়াল করুন:** প্রতিটি টার্নে খাতা বড় হচ্ছে, তাই token বাড়ছে। খুব লম্বা কথোপকথনে context window ভরে যাবে — সমাধান শিখবেন Phase 4-এ।
-
----
-
-# পাঠ ৪ — `/reset` আর মোট খরচ
-
-**ফাইল:** `agent.py`
-
-```python
-import os
-import sys
-from pathlib import Path
-
-from dotenv import load_dotenv
-from openai import OpenAI
-
-sys.stdout.reconfigure(encoding="utf-8")
-
-base = Path(__file__).parent
-load_dotenv(base.parent / "00-setup" / ".env")
-
-api_key = os.getenv("LLM_API_KEY")
-model = os.getenv("LLM_MODEL")
-
-if not api_key or not model:
-    print("00-setup/.env ফাইলে LLM_API_KEY আর LLM_MODEL দিন।")
-    sys.exit()
-
-system_prompt = (base / "prompts" / "system.md").read_text(encoding="utf-8")
-
-client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL"))
-
-messages = [{"role": "system", "content": system_prompt}]
 total_tokens = 0
 
 print("মিতুর সাথে কথা বলুন।")
@@ -322,101 +218,67 @@ print("কথোপকথন বন্ধ হলো।")
 **চালান:**
 
 ```bash
-python 01-hello-agent/agent.py
+python 01-hello-agent/02_chat_loop.py
 ```
 
-**নতুন যা যোগ হলো**
+**এভাবে কথা বলুন:**
+
+```
+মিতুর সাথে কথা বলুন।
+/reset = নতুন কথোপকথন, exit = বন্ধ
+তুমি: তুমি কে?
+মিতু: আমি মিতু, Little Office Ltd.-এর কাস্টমার সাপোর্ট অ্যাসিস্ট্যান্ট।
+token: 428 | মোট: 428
+তুমি: আমার নাম রাফি
+মিতু: হ্যালো রাফি! কীভাবে সাহায্য করতে পারি?
+token: 445 | মোট: 873
+তুমি: আমার নাম কী?
+মিতু: আপনার নাম রাফি।
+token: 501 | মোট: 1374
+তুমি: /reset
+নতুন কথোপকথন শুরু হয়েছে।
+তুমি: আমার নাম কী?
+মিতু: আপনার নাম আমার কাছে নেই।
+token: 417 | মোট: 417
+তুমি: exit
+কথোপকথন বন্ধ হলো।
+```
+
+### কোন অংশ কী কাজ করে
 
 | অংশ | কাজ |
 |---|---|
-| `total_tokens = 0` | শুরুর হিসাব |
+| `messages = [system]` | কথোপকথনের খাতা; প্রথম পাতায় নিয়ম |
+| `total_tokens = 0` | খরচের শুরুর হিসাব |
+| `while True` | `exit` না বলা পর্যন্ত চলে |
+| `input(...)` | আমাদের প্রশ্ন নেয় |
+| `messages.append({"role": "user", ...})` | প্রশ্ন খাতায় লেখে |
+| `create(..., messages=messages)` | **পুরো খাতা** মডেলকে দেখায় |
+| `messages.append({"role": "assistant", ...})` | উত্তরও খাতায় লেখে |
 | `if question == "/reset":` | নতুন খাতা, পুরনো কথা মুছে ফেলা |
 | `messages = [system]` | শুধু নিয়ম রেখে বাকি সব বাদ |
-| `total_tokens = 0` | খরচের হিসাবও রিসেট |
 | `continue` | নিচের কোড না চালিয়ে আবার লুপের শুরুতে |
 | `total_tokens + ...` | প্রতিবার যোগ করে মোট দেখানো |
 
-**মজার পরীক্ষা:**
-
-1. `আমার নাম রাফি` বলুন।
-2. `আমার নাম কী?` জিজ্ঞেস করুন — মনে আছে।
-3. `/reset` দিন।
-4. আবার `আমার নাম কী?` জিজ্ঞেস করুন — এখন মনে নেই।
-
-এটাই প্রমাণ: "মনে রাখা" ছিল খাতায়, মডেলের মাথায় নয়।
-
----
-
-# বোনাস — স্ট্রিমিং
-
-**ফাইল:** `bonus_streaming.py`
+### সবচেয়ে গুরুত্বপূর্ণ লাইন
 
 ```python
-import os
-import sys
-from pathlib import Path
-
-from dotenv import load_dotenv
-from openai import OpenAI
-
-sys.stdout.reconfigure(encoding="utf-8")
-
-base = Path(__file__).parent
-load_dotenv(base.parent / "00-setup" / ".env")
-
-api_key = os.getenv("LLM_API_KEY")
-model = os.getenv("LLM_MODEL")
-
-if not api_key or not model:
-    print("00-setup/.env ফাইলে LLM_API_KEY আর LLM_MODEL দিন।")
-    sys.exit()
-
-system_prompt = (base / "prompts" / "system.md").read_text(encoding="utf-8")
-
-client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL"))
-
-stream = client.chat.completions.create(
-    model=model,
-    messages=[
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": "Little Office সম্পর্কে দুই বাক্যে বলো।"},
-    ],
-    stream=True,
-)
-
-print("মিতু: ", end="", flush=True)
-
-for chunk in stream:
-    if chunk.choices:
-        text = chunk.choices[0].delta.content
-        if text:
-            print(text, end="", flush=True)
-
-print()
+messages.append({"role": "assistant", "content": answer})
 ```
 
-**চালান:**
+এই লাইনটা না থাকলে মডেল পরের বার আগের উত্তর দেখতে পাবে না — মনে হবে সব ভুলে গেছে।
 
-```bash
-python 01-hello-agent/bonus_streaming.py
-```
+**LLM-এর নিজের স্মৃতি নেই।** যে "মনে রাখা" দেখছেন, সেটা আসলে আমরা প্রতিবার পুরো কথোপকথন আবার পাঠাচ্ছি।
 
-উত্তরটা শব্দে শব্দে আসবে — চ্যাট অ্যাপে যেভাবে দেখেন।
+`/reset` করার পরে মিতু নাম ভুলে যায় — কারণ খাতা মুছে গেছে, মডেলের মাথা থেকে কিছু যায়নি। এটাই প্রমাণ।
 
-| অংশ | কাজ |
-|---|---|
-| `stream=True` | পুরো উত্তর একবারে নয়, টুকরো টুকরো |
-| `for chunk in stream` | প্রতিটি টুকরা নেওয়া |
-| `delta.content` | টুকরার ভিতরের লেখা |
-| `end="", flush=True` | নতুন লাইনে না গিয়ে সাথে সাথে দেখানো |
-
-স্ট্রিমিং-এ token হিসাব আলাদা ভাবে আনতে হয়, তাই এখানে দেখানো হয়নি।
+**খেয়াল করুন:** প্রতিটি টার্নে খাতা বড় হচ্ছে, তাই token বাড়ছে। খুব লম্বা কথোপকথনে context window ভরে যাবে — সমাধান শিখবেন Phase 4-এ।
 
 ---
 
 # পরীক্ষা — মিতুকে ১০টি প্রশ্ন
 
-`agent.py` চালিয়ে একে একে জিজ্ঞেস করুন:
+`02_chat_loop.py` চালিয়ে একে একে জিজ্ঞেস করুন:
 
 | # | প্রশ্ন | প্রত্যাশা |
 |---|---|---|
@@ -447,8 +309,7 @@ python 01-hello-agent/bonus_streaming.py
 - [ ] `system.md` নিজে পড়েছেন
 - [ ] `01_single_call.py` চালিয়েছেন
 - [ ] `02_chat_loop.py`-তে নাম মনে রাখতে দেখেছেন
-- [ ] `agent.py`-তে `/reset` কাজ করছে
-- [ ] স্ট্রিমিং দেখেছেন
+- [ ] `/reset`-এর পরে নাম ভুলে যেতে দেখেছেন
 - [ ] ১০টি প্রশ্নের পরীক্ষা করেছেন
 - [ ] "LLM-এর নিজের স্মৃতি নেই" — নিজের ভাষায় বলতে পারেন
 
