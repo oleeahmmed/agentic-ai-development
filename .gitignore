@@ -19,3 +19,5 @@ Thumbs.db
 *.db
 *.sqlite3
 logs/
+python-basics/customer.json
+python-basics/tasks.json
