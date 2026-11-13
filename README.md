@@ -32,9 +32,9 @@
 ## দ্রুত শুরু
 
 ```bash
-# রিপো রুট থেকে
-.venv/Scripts/python.exe 00-setup/check_env.py
-.venv/Scripts/python.exe 00-setup/hello_llm.py
+source .venv/Scripts/activate
+python 00-setup/check_env.py
+python 00-setup/hello_llm.py
 ```
 
 প্রথমবার হলে [00-setup/README.md](00-setup/README.md) ধাপে ধাপে অনুসরণ করুন।

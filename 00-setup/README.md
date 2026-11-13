@@ -1,309 +1,321 @@
-# Phase 0 — পরিবেশ তৈরি (হাতে-কলমে গাইড)
+# Phase 0 — একদম শুরু (সহজ গাইড)
 
-> এই ফাইলটি দেখে হুবহু আবার বানানো যাবে। প্রতিটি ধাপে **কমান্ড → প্রত্যাশিত ফলাফল → কেন করছি** আছে।
-> সময়: ৩০–৪৫ মিনিট। খরচ: প্রথম কলে ১ সেন্টেরও কম।
+> **লক্ষ্য:** কম্পিউটার থেকে LLM-কে একটা প্রশ্ন করা, আর তার উত্তর দেখা।
+> **সময়:** ২০–৩০ মিনিট।
+> **খরচ:** প্রায় শূন্য (এক কলে এক সেন্টেরও কম)।
 
 ---
 
-## এই ফেজে কী কী বানানো হলো
+## এই ফোল্ডারে কী আছে
 
-| ফাইল/ফোল্ডার | কাজ |
+| ফাইল | কাজ |
 |---|---|
-| `.venv/` | আলাদা Python পরিবেশ (git-এ যাবে না) |
-| `00-setup/hello_llm.py` | প্রথম LLM কল — system + user message, token হিসাব |
-| `00-setup/check_env.py` | Python, প্যাকেজ, `.env` যাচাই (নেটওয়ার্ক কল করে না) |
-| `00-setup/.env.example` | কোন কোন সেটিং লাগবে তার নমুনা |
-| `00-setup/requirements.txt` | এই ফেজের প্যাকেজ |
-| `.gitignore` | `.env`, `.venv`, `__pycache__` বাদ দেওয়ার নিয়ম |
-| `README.md` (এই ফাইল) | ধাপে ধাপে পুনরুত্পাদনের নির্দেশনা |
+| `check_env.py` | সব ঠিক আছে কি না দেখে |
+| `hello_llm.py` | LLM-কে প্রথম প্রশ্ন করে |
+| `.env.example` | সেটিংসের নমুনা |
+| `requirements.txt` | যে ৩টি প্যাকেজ লাগবে |
 
-ফোল্ডারগুলো (`01-hello-agent/` … `06-company-helper/`) এখনই তৈরি করা হয়েছে, যাতে প্রতিটি প্রজেক্টের নিজের গাইড ও কোড আলাদা থাকে।
+আর এই `README.md` — যেটা আপনি এখন পড়ছেন।
 
 ---
 
-## ধাপ ১ — ফোল্ডার কাঠামো
+## ধাপ ১ — টার্মিনাল খুলুন
 
-রিপো রুট (`ai-agent/`) থেকে:
+Git Bash খুলুন। তারপর প্রজেক্ট ফোল্ডারে যান:
 
 ```bash
-mkdir -p 00-setup 01-hello-agent 02-weather-agent 03-memory-friend \
-         04-research-buddy 05-skill-creator 06-company-helper shared notes
+cd ~/Desktop/ai-agent
 ```
-
-**কেন:** প্রতিটি প্রজেক্টের নিজের ফোল্ডার — কোড, গাইড, ডেটা একসাথে থাকবে। পরে কিছু ভাঙলে বাকি প্রজেক্ট অক্ষত থাকবে।
 
 ---
 
-## ধাপ ২ — ভার্চুয়াল এনভায়রনমেন্ট
+## ধাপ ২ — Python আছে কি না দেখুন
+
+```bash
+python --version
+```
+
+`Python 3.11` বা তার চেয়ে বড় হলেই চলবে।
+(এখন আছে `Python 3.14.10`।)
+
+---
+
+## ধাপ ৩ — আলাদা বাক্স বানান (একবারই)
 
 ```bash
 python -m venv .venv
-.venv/Scripts/python.exe --version
+source .venv/Scripts/activate
 ```
 
-প্রত্যাশিত: `Python 3.14.10` (বা ৩.১১+ যেকোনো ভার্সন)।
+ভালো করে দেখুন — প্রম্পটের আগে `(.venv)` এসেছে কি না:
 
-**কেন:** `.venv` একটি আলাদা বাক্স। এখানে যা ইনস্টল করবেন, আপনার সিস্টেমের অন্য প্রজেক্টে তার প্রভাব পড়বে না। এক প্রজেক্টের প্যাকেজ ভার্সন আরেক প্রজেক্ট নষ্ট করবে না।
-
-**সক্রিয় করার দরকার নেই** — আমরা সবসময় `.venv/Scripts/python.exe` দিয়ে সরাসরি চালাব। চাইলে:
-
-```bash
-source .venv/Scripts/activate     # Git Bash
-# PowerShell: .venv\Scripts\Activate.ps1
+```
+(.venv) olee@PC MINGW64 ~/Desktop/ai-agent
 ```
 
-ভিতরে আছেন কি না বোঝার উপায়: প্রম্পটের আগে `(.venv)` দেখাবে।
+এলে বুঝবেন ভিতরে আছেন। নতুন টার্মিনাল খুললে আবার `source` লাইনটা চালাতে হবে।
 
-> Python 3.14 নতুন; বেশিরভাগ প্যাকেজ কাজ করে। ভবিষ্যতে LangGraph-এ কোনো সমস্যা হলে Python 3.12/3.13-এ নতুন venv বানাবেন — কোড বদলাতে হবে না।
+> **কেন?** `.venv` হলো আলাদা বাক্স। এখানে প্যাকেজ রাখলে আপনার অন্য প্রজেক্ট নষ্ট হবে না।
 
 ---
 
-## ধাপ ৩ — প্যাকেজ ইনস্টল
+## ধাপ ৪ — প্যাকেজ ইনস্টল
 
 ```bash
-.venv/Scripts/python.exe -m pip install --upgrade pip
-.venv/Scripts/python.exe -m pip install -r 00-setup/requirements.txt
+pip install -r 00-setup/requirements.txt
 ```
 
-যাচাই:
+তিনটি প্যাকেজ আসবে:
 
-```bash
-.venv/Scripts/python.exe -m pip list
-```
-
-প্রত্যাশিত (ভার্সন আপনার সময়ে আলাদা হতে পারে):
-
-```
-httpx            0.28.1
-openai           3.50.0
-python-dotenv    1.2.4
-```
-
-**কেন কোনটা:**
-
-- `openai` — LLM-এর সাথে কথা বলার ক্লায়েন্ট (OpenAI, OpenRouter, Gemini, Ollama — সবাই একই OpenAI-ফরম্যাটে চলে)
-- `python-dotenv` — `.env` ফাইল থেকে গোপন সেটিং পড়া
-- `httpx` — সাধারণ HTTP কল; পরের ফেজে আবহাওয়ার API-তে লাগবে
+| প্যাকেজ | কাজ |
+|---|---|
+| `openai` | LLM-এর সাথে কথা বলা |
+| `python-dotenv` | `.env` ফাইল পড়া |
+| `httpx` | ইন্টারনেটে অনুরোধ পাঠানো (পরে লাগবে) |
 
 ---
 
-## ধাপ ৪ — LLM API key নেওয়া
+## ধাপ ৫ — API key নিন
 
-যেকোনো **একটি** বেছে নিন। শিক্ষার জন্য সস্তা মডেলই যথেষ্ট।
+সবচেয়ে সহজ: **OpenRouter**
 
-**অপশন A — OpenRouter (সবচেয়ে সুবিধাজনক)**
-1. https://openrouter.ai → Sign up
-2. Credits-এ ছোট টপ-আপ (৫ ডলার অনেকদিন চলবে)
-3. Keys → Create Key → নাম দিন `ai-agent-labs`
-4. `sk-or-v1-...` কী কপি করুন
-5. মডেলের slug দেখুন Models পেজে (যেমন `openai/gpt-4.1-mini`, `google/gemini-2.5-flash`)
+1. https://openrouter.ai খুলুন
+2. Sign up করুন
+3. Credits-এ অল্প টাকা ঢালুন (৫ ডলার অনেকদিন চলবে)
+4. Keys → Create Key
+5. `sk-or-v1-...` দিয়ে শুরু হওয়া key কপি করুন
 
-**অপশন B — Google AI Studio (ফ্রি টিয়ার)**
-1. https://aistudio.google.com → Get API key
-2. কী কপি করুন
-3. Base URL: `https://generativelanguage.googleapis.com/v1beta/openai/`
-
-**অপশন C — OpenAI**
-1. https://platform.openai.com → API keys → Create new secret key
-2. বিলিং চালু থাকতে হবে
-
-**অপশন D — Ollama (লোকাল, ইন্টারনেট/খরচ নেই)**
-1. https://ollama.com থেকে ইনস্টল
-2. `ollama pull qwen3:8b`
-3. Base URL: `http://localhost:11434/v1`, key: `ollama`
-
-> **নিরাপত্তা:** API key = অফিসের আইডি কার্ড + ওয়ালেট। স্ক্রিনশটে, চ্যাটে, গিটহাবে দেখাবেন না। লিক হলে সাথে সাথে ড্যাশবোর্ড থেকে revoke করে নতুন key নিন।
+> key হলো আপনার টাকার চাবি। কাউকে দেবেন না, screenshot নেবেন না, git-এ দেবেন না।
 
 ---
 
-## ধাপ ৫ — `.env` তৈরি
+## ধাপ ৬ — `.env` ফাইল বানান
 
 ```bash
 cp 00-setup/.env.example 00-setup/.env
-code 00-setup/.env        # অথবা notepad 00-setup/.env
+code 00-setup/.env
 ```
 
-শুধু একটি ব্লক সক্রিয় রাখুন, বাকিগুলো `#` দিয়ে কমেন্ট। উদাহরণ (OpenRouter):
+ফাইলটা খুলে ঠিক এই তিনটি লাইন রাখুন (বাকিগুলো `#` দিয়ে শুরু, ওগুলো দরকার নেই):
 
 ```env
-LLM_API_KEY=sk-or-v1-আপনার-আসল-কী
+LLM_API_KEY=sk-or-v1-আপনার-আসল-কি
 LLM_BASE_URL=https://openrouter.ai/api/v1
 LLM_MODEL=openai/gpt-4.1-mini
 ```
 
-| ভেরিয়েবল | কাজ |
+| লাইন | কাজ |
 |---|---|
-| `LLM_API_KEY` | পরিচয়পত্র — কে কল করছে |
-| `LLM_BASE_URL` | কোন সার্ভারে যাবে (একই কোড, ভিন্ন provider) |
+| `LLM_API_KEY` | আপনার পরিচয়পত্র |
+| `LLM_BASE_URL` | কোন সার্ভারে যাবে |
 | `LLM_MODEL` | কোন মডেল উত্তর দেবে |
 
-**কেন `.env`:** কোডে key লিখলে ভুলে git-এ চলে যাবে। `.env` গিটহাবের বাইরে থাকে, কোড একই থাকে। অফিসের গোপন নথি আর সাধারণ ফাইলের পার্থক্যের মতো।
-
-> Windows Notepad ব্যবহার করলে File → Save as → "All files" বেছে `00-setup/.env` লিখুন; নাহলে `00-setup/.env.txt` তৈরি হবে আর স্ক্রিপ্ট ফাইলটা খুঁজে পাবে না।
+> `.env` ফাইলের নাম যেন ঠিক `.env` হয়। Notepad-এ সেভ করলে `.env.txt` হয়ে যেতে পারে — "All files" বেছে সেভ করুন।
 
 ---
 
-## ধাপ ৬ — পরিবেশ যাচাই
+## ধাপ ৭ — প্রথম ফাইল: `check_env.py`
+
+**কোথায়:** `00-setup/check_env.py`
+
+**পুরো কোড:**
+
+```python
+import os
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+sys.stdout.reconfigure(encoding="utf-8")
+
+env_file = Path(__file__).parent / ".env"
+load_dotenv(env_file)
+
+print("Python:", sys.version.split()[0])
+print(".env ফাইল:", "আছে" if env_file.exists() else "নেই")
+print("LLM_API_KEY:", "আছে" if os.getenv("LLM_API_KEY") else "নেই")
+print("LLM_BASE_URL:", os.getenv("LLM_BASE_URL", "নেই"))
+print("LLM_MODEL:", os.getenv("LLM_MODEL", "নেই"))
+print()
+
+if os.getenv("LLM_API_KEY") and os.getenv("LLM_MODEL"):
+    print("সব ঠিক আছে। এখন চালান: python 00-setup/hello_llm.py")
+else:
+    print("আগে 00-setup/.env ঠিক করুন।")
+```
+
+**চালান:**
 
 ```bash
-.venv/Scripts/python.exe 00-setup/check_env.py
+python 00-setup/check_env.py
 ```
 
-key বসানোর **আগে** এমন দেখাবে (এটাই স্বাভাবিক):
+**যা দেখাবে (key বসানোর পরে):**
 
 ```
-[OK  ] Python 3.11+ — পাওয়া গেছে 3.14
-[OK  ] প্যাকেজ: openai
-[OK  ] প্যাকেজ: python-dotenv
-[OK  ] প্যাকেজ: httpx
-[FAIL] .env ফাইল — নেই — .env.example কপি করে .env বানান
-[FAIL] LLM_API_KEY সেট — .env-এ আসল key দিন
-[FAIL] LLM_MODEL সেট — .env-এ মডেলের নাম দিন
+Python: 3.14.10
+.env ফাইল: আছে
+LLM_API_KEY: আছে
+LLM_BASE_URL: https://openrouter.ai/api/v1
+LLM_MODEL: openai/gpt-4.1-mini
+
+সব ঠিক আছে। এখন চালান: python 00-setup/hello_llm.py
 ```
 
-key বসানোর **পরে** সব `OK` হবে, শেষে দেখাবে:
+### কোন অংশ কী কাজ করে
 
-```
-সব ঠিক আছে। এখন চালান:
-  .venv/Scripts/python.exe 00-setup/hello_llm.py
-```
-
-**কেন এই স্ক্রিপ্ট:** ভুল ধরার সেরা সময় — কল করার আগে। নেটওয়ার্ক কল না করেই বোঝা যায় কী নেই।
+| অংশ | কাজ |
+|---|---|
+| `import os, sys` | Python-এর সাধারণ টুল আনা |
+| `from pathlib import Path` | ফাইলের ঠিকানা হ্যান্ডেল করা |
+| `from dotenv import load_dotenv` | `.env` পড়ার টুল |
+| `sys.stdout.reconfigure(...)` | Windows-এ বাংলা ঠিক দেখানো |
+| `Path(__file__).parent / ".env"` | এই ফাইলের পাশে `.env` খোঁজা |
+| `load_dotenv(env_file)` | `.env`-এর মানগুলো মেমোরিতে রাখা |
+| `sys.version.split()[0]` | Python-এর ভার্সন |
+| `env_file.exists()` | ফাইলটা সত্যিই আছে কি না |
+| `os.getenv("LLM_API_KEY")` | key-টা পড়া |
+| `os.getenv("LLM_BASE_URL", "নেই")` | না থাকলে "নেই" দেখানো |
+| শেষ `if` | key আর model থাকলে পরের ধাপের কথা বলা |
 
 ---
 
-## ধাপ ৭ — প্রথম LLM কল
+## ধাপ ৮ — দ্বিতীয় ফাইল: `hello_llm.py`
+
+**কোথায়:** `00-setup/hello_llm.py`
+
+**পুরো কোড:**
+
+```python
+import os
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+from openai import OpenAI
+
+sys.stdout.reconfigure(encoding="utf-8")
+
+env_file = Path(__file__).parent / ".env"
+load_dotenv(env_file)
+
+api_key = os.getenv("LLM_API_KEY")
+model = os.getenv("LLM_MODEL")
+base_url = os.getenv("LLM_BASE_URL")
+
+if not api_key or not model:
+    print("00-setup/.env ফাইলে LLM_API_KEY আর LLM_MODEL দিন।")
+    sys.exit()
+
+client = OpenAI(api_key=api_key, base_url=base_url)
+
+response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {
+            "role": "system",
+            "content": "তুমি Little Office Ltd.-এর সহায়ক। সংক্ষেপে বাংলায় উত্তর দাও।",
+        },
+        {
+            "role": "user",
+            "content": "তুমি কে?",
+        },
+    ],
+)
+
+print(response.choices[0].message.content)
+print("ব্যবহৃত token:", response.usage.total_tokens)
+```
+
+**চালান:**
 
 ```bash
-.venv/Scripts/python.exe 00-setup/hello_llm.py
+python 00-setup/hello_llm.py
 ```
 
-প্রত্যাশিত আউটপুট (উত্তর মডেলভেদে আলাদা):
+**যা দেখাবে (উত্তর মডেলভেদে আলাদা):**
 
 ```
-মডেল     : openai/gpt-4.1-mini
-Base URL : https://openrouter.ai/api/v1
-প্রশ্ন     : তুমি কে? এক বাক্যে বলো।
--------------------------------------------------------
-আমি Little Office Ltd.-এর সহায়ক অফিস অ্যাসিস্ট্যান্ট...
--------------------------------------------------------
-Tokens: input=48, output=21, total=69
-
-Phase 0 সফল। এখন README-এর ৯ নম্বর ধাপে যান।
+আমি Little Office Ltd.-এর সহায়ক অফিস অ্যাসিস্ট্যান্ট। আপনার কী সাহায্য করতে পারি?
+ব্যবহৃত token: 69
 ```
 
-### কোডটি লাইন ধরে বোঝা
+### কোন অংশ কী কাজ করে
 
-`00-setup/hello_llm.py` খুলে দেখুন:
+| অংশ | কাজ |
+|---|---|
+| `api_key`, `model`, `base_url` | `.env` থেকে তিনটি সেটিং পড়া |
+| `if not api_key ...` | key/model না থাকলে সাথে সাথে থামা |
+| `OpenAI(...)` | সার্ভারে কথা বলার দরজা তৈরি |
+| `messages` → `system` | কর্মীর নিয়মপত্র ("তুমি কে, কীভাবে কথা বলবে") |
+| `messages` → `user` | আজকের প্রশ্ন ("তুমি কে?") |
+| `create(...)` | প্রশ্ন পাঠিয়ে উত্তর আনা |
+| `choices[0].message.content` | আসল উত্তর |
+| `usage.total_tokens` | কত token খরচ হলো |
 
-1. **`load_dotenv(ENV_PATH)`** — `.env` ফাইলের প্রতিটি লাইন `os.environ`-এ ঢোকায়। এরপর `os.getenv` দিয়ে পড়া যায়।
-2. **`ENV_PATH = Path(__file__).parent / ".env"`** — ফাইলটি যে ফোল্ডারে আছে, সেখানেই `.env` খোঁজে। ফলে যে ফোল্ডার থেকে কমান্ড চালান, তাতে কিছু যায় আসে না।
-3. **`api_key`, `model`, `base_url`** — সবই বাইরে থেকে আসে, কোডে লেখা নেই। provider বদলাতে শুধু `.env` বদলাবেন।
-4. **`OpenAI(api_key=..., base_url=...)`** — ক্লায়েন্ট। `base_url` না দিলে ডিফল্ট OpenAI-তে যাবে।
-5. **`messages`** — দুটি চিঠি:
-   - `system`: স্থায়ী পরিচয় ও নিয়ম ("তুমি কে, কীভাবে কথা বলবে")
-   - `user`: আজকের কাজ ("তুমি কে?")
-6. **`client.chat.completions.create(...)`** — সার্ভারে অনুরোধ; উত্তর ফেরত আসে।
-7. **`response.choices[0].message.content`** — আসল উত্তর। (`choices` লিস্ট, কারণ একাধিক উত্তর চাওয়া যায়।)
-8. **`response.usage`** — কত token খরচ হলো। এটাই আপনার বিলের হিসাব।
-9. **`try/except`** — key ভুল (401), নেটওয়ার্ক সমস্যা, বা অন্য error-এ বাংলায় বোঝায়, ভয়ংকর ট্রেসব্যাক দেখায় না।
-10. **`sys.stdout.reconfigure(encoding="utf-8")`** — Windows কনসোলে বাংলা অক্ষর যাতে `UnicodeEncodeError` না দেয়।
+### system আর user আলাদা কেন?
 
-**একটা গুরুত্বপূর্ণ লক্ষ্য:** এখানে উত্তর এসেছে মডেলের **সাধারণ জ্ঞান** থেকে। Little Office Ltd. বলে আসলে কিছু নেই — মডেল সেটা জানে না, কিন্তু ভদ্রভাবে উত্তর দিয়েছে। পরের ফেজে এই ফাঁদটাই ধরবেন।
+- `system` = অফিসের নিয়ম। প্রতিবার একই থাকে।
+- `user` = আজকের কাজ। প্রতিবার বদলায়।
+
+নিয়ম আলাদা রাখলে পরে শুধু প্রশ্ন বদলালেই হবে — নিয়ম আবার লিখতে হবে না।
+
+### এই ফাইলের সবচেয়ে বড় শিক্ষা
+
+Little Office Ltd. আসলে নেই। মডেল তা জানে না, কিন্তু ভদ্রভাবে উত্তর দিয়ে দিল।
+**LLM যা জানে না, তা বানিয়ে বলতে পারে।** এটাই "hallucination"।
+এর সমাধান টুল — শিখবেন Phase 3-এ।
 
 ---
 
-## ধাপ ৮ — Git দিয়ে সংরক্ষণ
+## ধাপ ৯ — নিজে আবার বানান
 
-```bash
-git status
-git init
-git add .
-git status          # .env আছে কি না দেখুন — থাকা যাবে না
-git commit -m "chore: phase 0 environment setup"
-git branch -M main
-```
+এই README না দেখে চেষ্টা করুন:
 
-GitHub-এ নতুন (private) রিপো বানিয়ে:
+1. `practice` নামে নতুন ফোল্ডার বানান।
+2. নতুন `.venv`, একই ৩টি প্যাকেজ।
+3. `.env` বানান।
+4. `my_call.py` লিখুন — শুধু এই ৫টি কাজ:
+   - key পড়া
+   - client বানানো
+   - system + user message
+   - উত্তর নেওয়া
+   - প্রিন্ট করা
+5. চালান। কোথায় আটকালেন, নোটে লিখুন।
 
-```bash
-git remote add origin https://github.com/<username>/<repo>.git
-git push -u origin main
-```
-
-**কেন:** প্রতিদিনের কাজের স্ন্যাপশট। ভুল হলে ফিরে যাওয়া যায়। প্রতিটি ফেজ শেষে একটি commit — এটি শেখার অংশ।
-
-`.gitignore` যা বাদ দেয়: `.venv/`, `__pycache__/`, `.env`, ডেটাবেস ফাইল, লগ। `.venv` কখনো commit করবেন না — হাজারো ফাইল, OS-নির্ভর।
-
----
-
-## ধাপ ৯ — নিজে আবার বানান (সবচেয়ে গুরুত্বপূর্ণ)
-
-এখন এই গাইড না দেখে একটা নতুন ফোল্ডারে চেষ্টা করুন:
-
-1. `practice/` ফোল্ডার, নতুন venv, একই ৩টি প্যাকেজ।
-2. `.env` নিজে বানিয়ে key বসান।
-3. `hello.py` **মনে থেকে** লিখুন: dotenv → key পড়া → client → system+user → উত্তর প্রিন্ট।
-4. চালান। কোথায় আটকালেন, নোটে লিখুন।
-
-**বোনাস পরীক্ষা — Hallucination ধরা**
-
-`USER_PROMPT` বদলে করুন: `"Little Office Ltd.-এর আজকের স্টক কত?"`
-
-- প্রথমে যেমন আছে তেমন চালান — দেখুন মডেল বানিয়ে বলছে কি না।
-- এবার `SYSTEM_PROMPT`-এ যোগ করুন:
-  `"কোম্পানির নির্দিষ্ট তথ্য তোমার জানা নেই। জানা না থাকলে স্পষ্ট বলো: 'আমি এই তথ্য জানি না।'"`
-- আবার চালান — পার্থক্য লক্ষ্য করুন।
-
-এটাই Phase 2-এর মূল শিক্ষা: **প্রম্পট দিয়ে আচরণ নিয়ন্ত্রণ করা যায়, কিন্তু সত্য জানানো যায় না — তার জন্য টুল/ডেটা লাগে।**
+**ছোট পরীক্ষা:** প্রশ্ন বদলে করুন — `"Little Office Ltd.-এর আজকের স্টক কত?"`
+মডেল কী বলে দেখুন। বানিয়ে বলে কি না খেয়াল করুন।
 
 ---
 
 ## সমস্যা হলে
 
-| উপসর্গ | কারণ ও সমাধান |
+| যা দেখছেন | সমাধান |
 |---|---|
-| `ModuleNotFoundError: openai` | ভুল Python দিয়ে চালাচ্ছেন। `.venv/Scripts/python.exe` ব্যবহার করুন |
-| `401 Unauthorized` | key ভুল/মেয়াদোত্তীর্ণ — `.env` আবার দেখুন, নতুন key নিন |
-| `404 model not found` | `LLM_MODEL` slug ভুল, অথবা `LLM_BASE_URL` মেলেনি |
-| `429` | রেট লিমিট/ক্রেডিট শেষ — একটু অপেক্ষা বা টপ-আপ |
-| `APIConnectionError` | ইন্টারনেট, VPN, বা base URL ভুল |
-| `UnicodeEncodeError` | `PYTHONUTF8=1 .venv/Scripts/python.exe ...` অথবা স্ক্রিপ্টের reconfigure লাইন রাখুন |
-| `.env` পাওয়া যাচ্ছে না | ফাইলটি `00-setup/.env`-এ আছে কি? নাম `.env.txt` হয়ে গেছে কি? |
-| বাংলা বক্স/প্রশ্নবোধক দেখাচ্ছে | Windows Terminal ব্যবহার করুন; CMD-তে `chcp 65001` |
+| `ModuleNotFoundError` | `.venv` চালু করুন, তারপর `pip install -r 00-setup/requirements.txt` |
+| `401` | key ভুল — `.env` ঠিক করুন, নতুন key নিন |
+| `404 model not found` | `LLM_MODEL` বা `LLM_BASE_URL` মেলেনি |
+| `.env` পাওয়া যাচ্ছে না | ফাইল `00-setup/.env`-এ আছে কি? নাম `.env.txt` হয়ে গেছে কি? |
+| বাংলা অক্ষর এলোমেলো | Git Bash বা Windows Terminal ব্যবহার করুন |
 
 ---
 
-## খরচ নিয়ন্ত্রণ
+## শেষ চেকলিস্ট
 
-- শিক্ষার সময় ছোট মডেল ব্যবহার করুন; বড় মডেল শুধু দরকারে।
-- প্রতিটি কলে `usage` দেখুন — input token বেশি হলে প্রম্পট ছোট করুন।
-- ড্যাশবোর্ডে মাসিক লিমিট সেট করুন।
-- একই প্রশ্ন বারবার করতে হলে উত্তর ক্যাশ করুন (পরে শিখবেন)।
-
----
-
-## শেষ করার চেকলিস্ট
-
-- [ ] Python 3.11+ আছে
-- [ ] `.venv` তৈরি হয়েছে
-- [ ] `openai`, `python-dotenv`, `httpx` ইনস্টল
-- [ ] `.env`-এ আসল key, model, base URL
-- [ ] `check_env.py`-তে সব `OK`
-- [ ] `hello_llm.py` উত্তর ও token দেখাচ্ছে
-- [ ] `git status`-এ `.env` নেই
-- [ ] প্রথম commit/push হয়েছে
-- [ ] গাইড না দেখে আবার লিখেছেন
-- [ ] hallucination পরীক্ষাটি করেছেন
+- [ ] `python --version` কাজ করছে
+- [ ] `.venv` চালু হয়েছে
+- [ ] ৩টি প্যাকেজ ইনস্টল
+- [ ] `.env`-এ আসল key আছে
+- [ ] `check_env.py` সব "আছে" দেখাচ্ছে
+- [ ] `hello_llm.py` উত্তর আর token দেখাচ্ছে
+- [ ] `.env` git-এ যাবে না (`.gitignore`-এ আছে)
+- [ ] README না দেখে নিজে লিখেছেন
 
 ---
 
-## পরের ফেজে যাওয়ার আগে ৫টি প্রশ্ন
+## পরের ধাপ
 
-1. `system` আর `user` message-এর কাজ আলাদা কেন?
-2. `.env` কেন দরকার, কোডে key লিখলে কী সমস্যা?
-3. `LLM_BASE_URL` কী কাজে লাগে?
-4. token কী, আর খরচের সাথে সম্পর্ক কী?
-5. key লিক হলে প্রথম কী করবেন?
-
-উত্তর নিজের ভাষায় বলতে পারলে Phase 1 (Python) শুরু করুন — [সিলেবাস](../ai-agent-syllabus-bangla.md)।
+Phase 1 — Python বেসিক।
+শুধু যতটুকু Agent বানাতে লাগে: list, dict, function, JSON, try/except।
+[সিলেবাস দেখুন](../ai-agent-syllabus-bangla.md)
