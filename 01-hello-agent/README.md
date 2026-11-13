@@ -2,7 +2,6 @@
 
 > **লক্ষ্য:** LLM-কে "মিতু" নামের একজন অফিস কর্মী বানানো — যে নিজের পরিচয় জানে, কথোপকথন মনে রাখে, আর যা জানে না তা বানিয়ে বলে না।
 > **সময়:** ২–৩ দিন, দিনে ৩০–৬০ মিনিট।
-> **খরচ:** ফ্রি মডেলে শূন্য; সস্তা মডেলে প্রতি উত্তরে ১ টাকারও কম।
 
 ---
 
@@ -25,18 +24,16 @@ python 00-setup/check_env.py
 |---|---|
 | `prompts/system.md` | মিতুর পরিচয় ও কোম্পানির হ্যান্ডবুক |
 | `01_single_call.py` | একটি প্রশ্ন, একটি উত্তর |
-| `02_chat_loop.py` | বারবার কথা, মেমোরি, `/reset`, token হিসাব |
+| `02_chat_loop.py` | বারবার কথা, মেমোরি, `/reset` |
 
 মাত্র দুটি পাইথন ফাইল। দ্বিতীয়টা চালালেই পুরো Agent অনুভূতি পাবেন।
 
 ---
 
-## ছোট করে ৪টি শব্দ
+## ছোট করে ২টি শব্দ
 
 | শব্দ | সহজ অর্থ |
 |---|---|
-| **Token** | লেখার ছোট টুকরা। বাংলায় token তুলনামূলক বেশি লাগে। এটাই খরচের একক। |
-| **Context window** | মডেল একবারে কতটুকু দেখতে পারে। কথোপকথন লম্বা হলে সীমা এগিয়ে আসে। |
 | **Temperature** | উত্তরের randomness। ০ = প্রায় একই উত্তর, ১ = বৈচিত্র্য। |
 | **Hallucination** | মডেল জানে না, কিন্তু আত্মবিশ্বাসের সাথে বানিয়ে বলে। |
 
@@ -117,7 +114,6 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)
-print("token:", response.usage.total_tokens)
 ```
 
 **চালান:**
@@ -130,7 +126,6 @@ python 01-hello-agent/01_single_call.py
 
 ```
 আমি মিতু, Little Office Ltd.-এর কাস্টমার সাপোর্ট অ্যাসিস্ট্যান্ট।
-token: 312
 ```
 
 ### কোন অংশ কী কাজ করে
@@ -146,7 +141,6 @@ token: 312
 | `messages` → `system` | মিতুর পরিচয় ও নিয়ম |
 | `messages` → `user` | আমাদের প্রশ্ন |
 | `create(...)` | প্রশ্ন পাঠিয়ে উত্তর আনা |
-| `response.usage.total_tokens` | কত token খরচ হলো |
 
 **একটা জিনিস খেয়াল করুন:** আমরা "মিতু" নামটা কোডে লিখিনি। নাম এসেছে `system.md` থেকে। তাই প্রম্পট বদলালে কর্মীর পরিচয়ও বদলাবে।
 
@@ -181,7 +175,6 @@ system_prompt = (base / "prompts" / "system.md").read_text(encoding="utf-8")
 client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL"))
 
 messages = [{"role": "system", "content": system_prompt}]
-total_tokens = 0
 
 print("মিতুর সাথে কথা বলুন।")
 print("/reset = নতুন কথোপকথন, exit = বন্ধ")
@@ -194,7 +187,6 @@ while True:
 
     if question == "/reset":
         messages = [{"role": "system", "content": system_prompt}]
-        total_tokens = 0
         print("নতুন কথোপকথন শুরু হয়েছে।")
         continue
 
@@ -208,9 +200,6 @@ while True:
     messages.append({"role": "assistant", "content": answer})
 
     print("মিতু:", answer)
-
-    total_tokens = total_tokens + response.usage.total_tokens
-    print(f"token: {response.usage.total_tokens} | মোট: {total_tokens}")
 
 print("কথোপকথন বন্ধ হলো।")
 ```
@@ -228,18 +217,14 @@ python 01-hello-agent/02_chat_loop.py
 /reset = নতুন কথোপকথন, exit = বন্ধ
 তুমি: তুমি কে?
 মিতু: আমি মিতু, Little Office Ltd.-এর কাস্টমার সাপোর্ট অ্যাসিস্ট্যান্ট।
-token: 428 | মোট: 428
 তুমি: আমার নাম রাফি
 মিতু: হ্যালো রাফি! কীভাবে সাহায্য করতে পারি?
-token: 445 | মোট: 873
 তুমি: আমার নাম কী?
 মিতু: আপনার নাম রাফি।
-token: 501 | মোট: 1374
 তুমি: /reset
 নতুন কথোপকথন শুরু হয়েছে।
 তুমি: আমার নাম কী?
 মিতু: আপনার নাম আমার কাছে নেই।
-token: 417 | মোট: 417
 তুমি: exit
 কথোপকথন বন্ধ হলো।
 ```
@@ -249,7 +234,6 @@ token: 417 | মোট: 417
 | অংশ | কাজ |
 |---|---|
 | `messages = [system]` | কথোপকথনের খাতা; প্রথম পাতায় নিয়ম |
-| `total_tokens = 0` | খরচের শুরুর হিসাব |
 | `while True` | `exit` না বলা পর্যন্ত চলে |
 | `input(...)` | আমাদের প্রশ্ন নেয় |
 | `messages.append({"role": "user", ...})` | প্রশ্ন খাতায় লেখে |
@@ -258,7 +242,6 @@ token: 417 | মোট: 417
 | `if question == "/reset":` | নতুন খাতা, পুরনো কথা মুছে ফেলা |
 | `messages = [system]` | শুধু নিয়ম রেখে বাকি সব বাদ |
 | `continue` | নিচের কোড না চালিয়ে আবার লুপের শুরুতে |
-| `total_tokens + ...` | প্রতিবার যোগ করে মোট দেখানো |
 
 ### সবচেয়ে গুরুত্বপূর্ণ লাইন
 
@@ -271,8 +254,6 @@ messages.append({"role": "assistant", "content": answer})
 **LLM-এর নিজের স্মৃতি নেই।** যে "মনে রাখা" দেখছেন, সেটা আসলে আমরা প্রতিবার পুরো কথোপকথন আবার পাঠাচ্ছি।
 
 `/reset` করার পরে মিতু নাম ভুলে যায় — কারণ খাতা মুছে গেছে, মডেলের মাথা থেকে কিছু যায়নি। এটাই প্রমাণ।
-
-**খেয়াল করুন:** প্রতিটি টার্নে খাতা বড় হচ্ছে, তাই token বাড়ছে। খুব লম্বা কথোপকথনে context window ভরে যাবে — সমাধান শিখবেন Phase 4-এ।
 
 ---
 

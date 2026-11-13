@@ -2,7 +2,6 @@
 
 > **লক্ষ্য:** কম্পিউটার থেকে LLM-কে একটা প্রশ্ন করা, আর তার উত্তর দেখা।
 > **সময়:** ২০–৩০ মিনিট।
-> **খরচ:** প্রায় শূন্য (এক কলে এক সেন্টেরও কম)।
 
 ---
 
@@ -225,7 +224,6 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)
-print("ব্যবহৃত token:", response.usage.total_tokens)
 ```
 
 **চালান:**
@@ -238,7 +236,6 @@ python 00-setup/hello_llm.py
 
 ```
 আমি Little Office Ltd.-এর সহায়ক অফিস অ্যাসিস্ট্যান্ট। আপনার কী সাহায্য করতে পারি?
-ব্যবহৃত token: 69
 ```
 
 ### কোন অংশ কী কাজ করে
@@ -252,7 +249,6 @@ python 00-setup/hello_llm.py
 | `messages` → `user` | আজকের প্রশ্ন ("তুমি কে?") |
 | `create(...)` | প্রশ্ন পাঠিয়ে উত্তর আনা |
 | `choices[0].message.content` | আসল উত্তর |
-| `usage.total_tokens` | কত token খরচ হলো |
 
 ### system আর user আলাদা কেন?
 
@@ -310,7 +306,7 @@ Little Office Ltd. আসলে নেই। মডেল তা জানে �
 - [ ] ৩টি প্যাকেজ ইনস্টল
 - [ ] `.env`-এ আসল key আছে
 - [ ] `check_env.py` সব "আছে" দেখাচ্ছে
-- [ ] `hello_llm.py` উত্তর আর token দেখাচ্ছে
+- [ ] `hello_llm.py` উত্তর দেখাচ্ছে
 - [ ] `.env` git-এ যাবে না (`.gitignore`-এ আছে)
 - [ ] README না দেখে নিজে লিখেছেন
 

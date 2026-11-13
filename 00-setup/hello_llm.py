@@ -35,4 +35,3 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)
-print("ব্যবহৃত token:", response.usage.total_tokens)
