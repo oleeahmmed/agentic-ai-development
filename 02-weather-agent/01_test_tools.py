@@ -1,20 +1,14 @@
 import sys
 
-from tools import get_current_weather, get_forecast, convert_temperature
+from tools import get_forecast, get_weather
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-print("১. এখনকার আবহাওয়া")
-print(get_current_weather("Dhaka"))
-print()
+print("১. ঢাকার এখনকার আবহাওয়া")
+print(get_weather("Dhaka"))
 
-print("২. ৩ দিনের পূর্বাভাস")
-print(get_forecast("Chattogram", 3))
-print()
+print("\n২. চট্টগ্রামের ৩ দিনের পূর্বাভাস")
+print(get_forecast("Chattogram"))
 
-print("৩. তাপমাত্রা রূপান্তর")
-print(convert_temperature(30, "C"))
-print()
-
-print("৪. ভুল শহর")
-print(get_current_weather("Xyzzyville"))
+print("\n৩. ভুল শহর")
+print(get_weather("Xyzzyville"))

@@ -233,7 +233,7 @@ Agent লাগে যখন: ভাষা বুঝতে হয়, ইনপ�
 - Open-Meteo API: geocoding + forecast (ফ্রি, key লাগে না)
 
 **প্রজেক্ট ২ — Weather Agent**
-- Tools: `get_current_weather(city)`, `get_forecast(city, days)`, `convert_temperature(value, unit)`
+- Tools: `get_weather(city)`, `get_forecast(city)` — শুরুতে দুটোই যথেষ্ট
 - "আগামীকাল চট্টগ্রামে বৃষ্টি হবে?" → সঠিক টুল, সঠিক আর্গুমেন্ট
 - অজানা শহর → ভদ্রভাবে ব্যর্থতা জানায়, বানিয়ে বলে না
 - প্রতিটি tool call লগ করে
@@ -303,6 +303,16 @@ START → plan → search → summarize → critique ─(যথেষ্ট?)→
 **শেষ করার মানদণ্ড:** লুপ অনন্ত হয় না; রিপোর্টে আসল সোর্স লিংক থাকে; তথ্য না পেলে বানিয়ে বলে না; interrupt-এর পরে resume হয়; গ্রাফের ছবি কাগজে এঁকে ব্যাখ্যা করতে পারেন।
 
 **Stretch:** parallel search (`Send` API), প্রতিটি সোর্সের জন্য subgraph।
+
+---
+
+### বোনাস — CrewAI (ঐচ্ছিক, ২–৩ দিন)
+
+**লক্ষ্য:** একই agent loop ফ্রেমওয়ার্ক দিয়ে — Agent, Task, Crew দিয়ে টিম বানানো।
+
+- `crewai-basics/`-এ ৫টি ছোট পাঠ: এক crew → দুই কাজ → দুই এজেন্ট → টুল → টিম + ফাইল সেভ
+- CrewAI এখন Python 3.10–3.13 চায়; `py -3.12` দিয়ে আলাদা `.venv-crewai` ব্যবহার করুন
+- গাইড: [`crewai-basics/README.md`](crewai-basics/README.md)
 
 ---
 
@@ -531,6 +541,14 @@ ai-agent/
 │  ├─ db/seed.py
 │  ├─ evals/cases.json
 │  └─ logs/
+├─ crewai-basics/            # বোনাস — CrewAI ফ্রেমওয়ার্ক (Python 3.12 venv)
+│  ├─ 01_first_crew.py
+│  ├─ 02_two_tasks.py
+│  ├─ 03_two_agents.py
+│  ├─ 04_tool.py
+│  ├─ 05_team.py
+│  ├─ office_note.txt
+│  └─ README.md
 ├─ ai-mini-office/           # আগের প্রোটোটাইপ
 ├─ shared/                   # skill_loader, llm client, logging
 └─ notes/                    # প্রতিদিনের শেখা, ভুল, সমাধান

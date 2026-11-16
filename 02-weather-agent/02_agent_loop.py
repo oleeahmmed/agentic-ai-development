@@ -13,33 +13,42 @@ sys.stdout.reconfigure(encoding="utf-8")
 base = Path(__file__).parent
 load_dotenv(base.parent / "00-setup" / ".env")
 
-api_key = os.getenv("LLM_API_KEY")
 model = os.getenv("LLM_MODEL")
 
-if not api_key or not model:
+if not os.getenv("LLM_API_KEY") or not model:
     print("00-setup/.env ফাইলে LLM_API_KEY আর LLM_MODEL দিন।")
     sys.exit()
 
 system_prompt = (base / "prompts" / "system.md").read_text(encoding="utf-8")
 
-client = OpenAI(api_key=api_key, base_url=os.getenv("LLM_BASE_URL"))
+client = OpenAI(
+    api_key=os.getenv("LLM_API_KEY"),
+    base_url=os.getenv("LLM_BASE_URL"),
+)
 
 messages = [{"role": "system", "content": system_prompt}]
 
-print("আবহাওয়া এজেন্ট। exit = বন্ধ")
+print("আবহাওয়া এজেন্ট। mem = মেমোরি দেখো, exit = বন্ধ")
 
 while True:
-    question = input("তুমি: ").strip()
+    question = input("\nতুমি: ").strip()
 
     if question == "exit":
         break
+
+    if question == "mem":
+        for number, item in enumerate(messages, 1):
+            role = item["role"] if isinstance(item, dict) else item.role
+            print(number, role)
+        continue
 
     if not question:
         continue
 
     messages.append({"role": "user", "content": question})
+    answer = None
 
-    for step in range(5):
+    for step in range(1, 5):
         response = client.chat.completions.create(
             model=model,
             messages=messages,
@@ -49,7 +58,7 @@ while True:
         messages.append(message)
 
         if not message.tool_calls:
-            print("এজেন্ট:", message.content)
+            answer = message.content
             break
 
         for call in message.tool_calls:
@@ -57,8 +66,8 @@ while True:
             args = json.loads(call.function.arguments or "{}")
             result = run_tool(name, args)
 
-            print("  [টুল]", name, args)
-            print("  [ফলাফল]", result)
+            print(f"[ধাপ {step}] মডেল বাছাই করল: {name} {args}")
+            print(f"[ধাপ {step}] টুলের ফল: {result}")
 
             messages.append(
                 {
@@ -67,7 +76,8 @@ while True:
                     "content": result,
                 }
             )
-    else:
-        print("এজেন্ট: ৫ ধাপেও উত্তর মিলল না।")
+
+    print("এজেন্ট:", answer or "৪ ধাপেও উত্তর পাওয়া যায়নি।")
+    print(f"[মেমোরি] এখন {len(messages)}টি মেসেজ জমেছে")
 
 print("বন্ধ হলো।")

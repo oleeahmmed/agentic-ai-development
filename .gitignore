@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-crewai/
 venv/
 
 # secrets
@@ -23,3 +24,4 @@ python-basics/customer.json
 python-basics/tasks.json
 03-memory-friend/memories.json
 04-research-buddy/reports/
+crewai-basics/notice.md
