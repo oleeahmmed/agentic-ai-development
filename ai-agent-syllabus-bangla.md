@@ -316,6 +316,16 @@ START → plan → search → summarize → critique ─(যথেষ্ট?)→
 
 ---
 
+### বোনাস — LangGraph বেসিক (ঐচ্ছিক, ২–৩ দিন)
+
+**লক্ষ্য:** Phase 5-এর গ্রাফটা ভেঙে ছোট ছোট টুকরোয় বোঝা — LLM ছাড়াই।
+
+- `langgraph-basics/`-এ ৬টি পাঠ: প্রথম গ্রাফ → state/reducer → শর্ত → লুপ → checkpointer → interrupt
+- প্রতিটি পাঠ অফলাইনে চলে, ফল একই আসে; মূল `.venv`-ই যথেষ্ট
+- গাইড: [`langgraph-basics/README.md`](langgraph-basics/README.md)
+
+---
+
 ### Phase 6 — Skills: এজেন্টকে কাজ শেখানো (১ সপ্তাহ)
 
 **লক্ষ্য:** বিশাল system prompt-এর বদলে ছোট, পুনর্ব্যবহারযোগ্য "SOP ফাইল"।
@@ -548,6 +558,14 @@ ai-agent/
 │  ├─ 04_tool.py
 │  ├─ 05_team.py
 │  ├─ office_note.txt
+│  └─ README.md
+├─ langgraph-basics/         # বোনাস — LangGraph, LLM ছাড়া ৬টি পাঠ
+│  ├─ 01_first_graph.py
+│  ├─ 02_state.py
+│  ├─ 03_condition.py
+│  ├─ 04_loop.py
+│  ├─ 05_memory.py
+│  ├─ 06_interrupt.py
 │  └─ README.md
 ├─ ai-mini-office/           # আগের প্রোটোটাইপ
 ├─ shared/                   # skill_loader, llm client, logging
